@@ -11,7 +11,7 @@ interface OHLCData {
 }
 
 interface OHLCChartProps {
-  data: OHLCData[];
+  data: any[];
 }
 
 const OHLCChart: React.FC<OHLCChartProps> = ({ data }) => {
@@ -179,14 +179,5 @@ const OHLCChart: React.FC<OHLCChartProps> = ({ data }) => {
     </div>
   );
 };
-
-
-
-
-// in this   tooltipElement.innerHTML = `<div style="display: flex, position: relative, z-index:1, gap:2em, top:25em"><div style="color: ${tooltipColor}">Open: ${price.open}</div>
-// <div style="color: ${tooltipColor}">High: ${price.high}</div>
-// <div style="color: ${tooltipColor}">Low: ${price.low}</div>
-// <div style="color: ${tooltipColor}">Close: ${price.close}</div></div>`;
-// my style=" display: flex, position: relative, z-index:1, gap:2em, top:25em" this style will not set i want to set 
 
 export default OHLCChart;
