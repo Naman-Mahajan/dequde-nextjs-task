@@ -1,17 +1,17 @@
 import { CrosshairMode } from "lightweight-charts";
 import { TimeFrameOption } from "../types/interfaces/ITimeFrame"
-
+import { TimeframeEnum } from "./enum"
 
 const timeFrame : TimeFrameOption[] = [
-  { value: "1W", label: "3y" },
-  { value: "1D", label: "1y" },
-  { value: "12h", label: "3m" },
-  { value: "6h", label: "1m" },
-  { value: "1h", label: "7d" },
-  { value: "30m", label: "3d" },
-  { value: "15m", label: "1d" },
-  { value: "5m", label: "6h" },
-  { value: "1m", label: "1h" },
+  { value: TimeframeEnum.ONE_WEEK, label: "3y"  },
+  { value: TimeframeEnum.ONE_DAY, label: "1y" },
+  { value: TimeframeEnum.TWELVE_HOUR, label: "3m" },
+  { value: TimeframeEnum.SIX_HOUR, label: "1m" },
+  { value: TimeframeEnum.ONE_HOUR, label: "7d" },
+  { value: TimeframeEnum.THIRTY_MIN, label: "3d" },
+  { value: TimeframeEnum.FIFTEEN_MIN, label: "1d" },
+  { value: TimeframeEnum.FIVE_MIN, label: "6h" },
+  { value: TimeframeEnum.ONE_MIN, label: "1h" },
 ];
 
 const chartConfig = {overlayPriceScales: {

@@ -4,6 +4,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { CandlestickData, IChartApi, createChart } from "lightweight-charts";
 import TimeframeButton from "./Button";
 import { chartConfig, timeFrame } from "../chartConfiguration/config"
+import { TimeframeEnum } from "../chartConfiguration/enum"
+
 import { TimeFrameOption } from "../types/interfaces/ITimeFrame"
 import { CandleOptions } from "../types/interfaces/IOhclChart";
 
@@ -11,7 +13,7 @@ import { CandleOptions } from "../types/interfaces/IOhclChart";
 const CandlestickChart = () => {
 
   const [candleData, setCandleData] = useState<CandleOptions[]>([]);
-  const [timeframe, setTimeframe] = useState<string>("1W");
+  const [timeframe, setTimeframe] = useState<string>(TimeframeEnum.ONE_WEEK);
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartInstance = useRef<IChartApi | any>(null);
   const wss = useRef<WebSocket | null>(null);
@@ -92,11 +94,11 @@ const CandlestickChart = () => {
       const candlestickSeries = chartInstance.current.addCandlestickSeries();
      
       const mappedData = candleData.map((candle: any) => ({
-        time: candle[0] / 1000,
-        open: candle[1],
+        time:  candle[0] / 1000,
+        open:  candle[1],
         close: candle[2],
-        high: candle[3],
-        low: candle[4],
+        high:  candle[3],
+        low:   candle[4],
       }));
       
       mappedData.sort((a, b) => a.time - b.time);
@@ -172,4 +174,5 @@ const CandlestickChart = () => {
 };
 
 export default CandlestickChart;
+
 
