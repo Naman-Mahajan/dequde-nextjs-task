@@ -6,7 +6,7 @@ import { Typography, Paper, TableContainer, Table, TableHead, TableBody, TableRo
 import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 import styled from 'styled-components';
 import useOrderBook from '../../utils/orderWebSocket';
-
+// import {StyledPaper, StyledTableContainer} from "../"
 
 const StyledPaper = styled(Paper)`
   padding: 20px;
@@ -34,6 +34,7 @@ const OrderBook: React.FC = () => {
   };
 
   const memoizedOrderBook = useMemo(() => (
+  
     <>
     <StyledPaper>
       <Typography variant="h5" gutterBottom>
@@ -96,7 +97,8 @@ const OrderBook: React.FC = () => {
       </Collapse>
     </StyledPaper>
     </>
-  ), [orderBook, isCollapsed]);
+  ), 
+  [orderBook, isCollapsed]);
 
   return memoizedOrderBook;
 };

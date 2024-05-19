@@ -30,7 +30,6 @@ const TimeframeButton :React.FC<TimeframeButtonProps>= ({ timeframe, setTimefram
   const handleClick = () => {
     setTimeframe(timeframe);
   };
-  console.log(timeframe)
 
   return (
     <TransparentButton

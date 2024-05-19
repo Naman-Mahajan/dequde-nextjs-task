@@ -6,7 +6,7 @@ import React, {
   useRef,
 
 } from "react";
-import { CandlestickData, IChartApi, createChart } from "lightweight-charts";
+import { CandlestickData, IChartApi, Time, createChart } from "lightweight-charts";
 import TimeframeButton from "../Button/Button";
 import { chartConfig } from "../../chartConfiguration/ChartConfig";
 import { CandleOptions } from "../../types/interfaces/IOhclChart";
@@ -18,12 +18,12 @@ import { ChartContainer, CustomTooltip, Spacer } from "./CandlestickChart.styles
 import ReactDOMServer from 'react-dom/server';
 
 const CandlestickChart = () => {
-  let [candleData, setCandleData] = useState<CandleOptions[]>([]);
+  let [candleData, setCandleData] = useState<CandlestickData<Time>[]>([]);
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const [isChartLoaded, setIsChartLoaded] = useState<boolean>(false);
   const [timeframe, setTimeframe] = useState<string>(TimeframeEnum.ONE_WEEK);
-  const chartInstance = useRef<any>(null);
-
+  // const chartApi = useRef<any>(null);
+  let [chartApi, setChartApi] = useState<IChartApi>() ;
   useEffect(() => {
     const wss = connectWebSocket(timeframe, setCandleData);
     return () => {
@@ -33,11 +33,11 @@ const CandlestickChart = () => {
   useEffect(() => {
     if (chartContainerRef.current && candleData.length > 0) {
       setIsChartLoaded(true);
-      if (chartInstance.current) {
-        chartInstance.current.remove();
+      if (chartApi) {
+        chartApi.remove();
       }
 
-      chartInstance.current = createChart(chartContainerRef.current, {
+      chartApi = createChart(chartContainerRef.current, {
         width: chartContainerRef.current.clientWidth,
         height: chartContainerRef.current.clientHeight,
         ...chartConfig,
@@ -46,22 +46,24 @@ const CandlestickChart = () => {
         timeVisible: true,
         secondsVisible: true,
       };
-      chartInstance?.current?.applyOptions({
+      chartApi?.applyOptions({
         timeScale: timeScaleOptions,
       });
-      const candlestickSeries = chartInstance?.current?.addCandlestickSeries();
+      setChartApi(chartApi);
+      const candlestickSeries = chartApi?.addCandlestickSeries();
       
-      const mappedData = candleData.map((candle: any) => ({
-        time: candle[0] / 1000,
-        open: candle[1],
-        close: candle[2],
-        high: candle[3],
-        low: candle[4],
-      }));
+      // const mappedData :any= candleData.map((candle) => ({
+      //   time: candle.time,
+      //   open: candle.open,
+      //   close: candle,
+      //   high: candle[3],
+      //   low: candle[4],
+      // }));
 
-      mappedData.sort((a, b) => a.time - b.time);
+      // candleData.sort((a, b) => Number(a.time) - Number(b.time));
 
-      candlestickSeries?.setData(mappedData);
+      candlestickSeries?.setData(candleData);
+
       const tooltipElement = document.createElement("div");
       tooltipElement.classList.add("custom-tooltip");
       chartContainerRef.current.appendChild(tooltipElement);
@@ -89,14 +91,10 @@ const CandlestickChart = () => {
             );
       };
 
-      chartInstance.current.subscribeCrosshairMove((param:  {
-        time?: number;
-        point?: { x: number; y: number };
-        seriesData?: Map<CandlestickData, CandlestickData>;
-      }) => {
+      chartApi.subscribeCrosshairMove((param) => {
         if (!param.time || !param.point) return;
-
-        const price = param?.seriesData?.get(candlestickSeries);
+        
+        const price= param?.seriesData?.get(candlestickSeries) as CandlestickData<Time>;
         if (!price) return;
         const tooltipColor: string =
           price.close > price.open ? "#4bffb5" : "#ff4976";
