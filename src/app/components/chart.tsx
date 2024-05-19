@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { CandlestickData, createChart } from "lightweight-charts";
 import TimeframeButton from "../components/Button/Button";
-import { chartConfig, timeFrame } from "../chartConfiguration/chartConfig"
+import { chartConfig, timeFrame } from "../chartConfiguration/ChartConfig"
 import { TimeFrameOption } from "../types/interfaces/ITimeFrame"
 import { CandleOptions } from "../types/interfaces/IOhclChart";
 

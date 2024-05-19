@@ -13,15 +13,17 @@ export const connectWebSocket = (timeframe: string, setCandleData: React.Dispatc
       wss.send(msg);
     };
   
-    wss.onmessage = (event) => {
+    wss.onmessage = (event: MessageEvent) => {
       const candleStickData = JSON.parse(event.data);
       if (Array.isArray(candleStickData) && Array.isArray(candleStickData[1])) {
         if (candleStickData[1][0] instanceof Array) {
           setCandleData(candleStickData[1].sort((a: number[], b: number[]) => a[0] - b[0]));
         } else {
+          
+          type CandleData = [number, CandleOptions];
           setCandleData((prevData) => {
-            const newData :any= [...prevData];
-            const newCandle : any= candleStickData[1];
+            const newData = [...prevData];
+            const newCandle = candleStickData[1];
             const existingCandleIndex : number= newData.findIndex(
               (candle: any) => candle[0] === newCandle[0]
             );
@@ -30,7 +32,7 @@ export const connectWebSocket = (timeframe: string, setCandleData: React.Dispatc
             } else {
               newData.push(newCandle);
             }
-            return newData.sort((a: any, b: any) => a.time - b.time);
+            return newData.sort((a, b) => a.time - b.time);
           });
         }
       }

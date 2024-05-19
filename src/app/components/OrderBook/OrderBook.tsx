@@ -1,4 +1,5 @@
-"use client"
+"use client";
+
 
 import React, { useMemo } from 'react';
 import { Typography, Paper, TableContainer, Table, TableHead, TableBody, TableRow, TableCell, IconButton, Collapse } from '@mui/material';
@@ -8,9 +9,10 @@ import useOrderBook from '../../utils/orderWebSocket';
 
 
 const StyledPaper = styled(Paper)`
-  padding: 16px;
+  padding: 20px;
   text-align: center;
   color: inherit;
+  margin-bottom: '20px'
 `;
 
 const StyledTableContainer = styled(({ ...props }) => <TableContainer {...props} />)`
@@ -33,7 +35,7 @@ const OrderBook: React.FC = () => {
 
   const memoizedOrderBook = useMemo(() => (
     <>
-    <StyledPaper style={{ padding: '20px', marginBottom: '20px' }}>
+    <StyledPaper>
       <Typography variant="h5" gutterBottom>
          Order Book BTC/USD
         <IconButton onClick={handleCollapse}>
@@ -43,7 +45,7 @@ const OrderBook: React.FC = () => {
       <Collapse in={!isCollapsed}>
         <div style={{ display: 'flex' }}>
         <StyledTableContainer component={Paper}>
-            <Typography style={{textAlign: 'center'}} variant="h6" gutterBottom>Bids</Typography>
+            <Typography  variant="h6" gutterBottom>Bids</Typography>
             <Table>
               <TableHead>
                 <TableRow>
@@ -67,7 +69,7 @@ const OrderBook: React.FC = () => {
           </StyledTableContainer>
         
         <StyledTableContainer component={Paper}  >
-            <Typography style={{textAlign: 'center'}} variant="h6" gutterBottom>Asks</Typography>
+            <Typography  variant="h6" gutterBottom>Asks</Typography>
             <Table>
               <TableHead>
                 <TableRow>
@@ -100,4 +102,3 @@ const OrderBook: React.FC = () => {
 };
 
 export default OrderBook;
-
