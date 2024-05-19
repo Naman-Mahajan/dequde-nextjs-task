@@ -4,7 +4,7 @@ import React, { useMemo } from 'react';
 import { Typography, Paper, TableContainer, Table, TableHead, TableBody, TableRow, TableCell, IconButton, Collapse } from '@mui/material';
 import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 import styled from 'styled-components';
-import useOrderBook from './useWebSocket';
+import useOrderBook from '../../utils/orderWebSocket';
 
 
 const StyledPaper = styled(Paper)`

@@ -1,31 +1,69 @@
-"use client"
+"use client";
 
-import React, { useState, useEffect, useRef,Dispatch, SetStateAction } from "react";
+import React, { useState, useEffect } from "react";
 import { CandlestickData, createChart } from "lightweight-charts";
-import TimeframeButton from "../Button/Button";
-import { chartConfig } from "../../chartConfiguration/chartConfig";
-import { CandleOptions } from "../../types/interfaces/IOhclChart";
-import { TimeFrameOption } from "../../types/interfaces/ITimeFrame";
-import { connectWebSocket, closeWebSocket } from "../../utils/chartWebsocket";
-import {timeFrame} from "@/app/chartConfiguration/chartConfig"
-import {TimeframeEnum} from "@/app/chartConfiguration/enum"
+import TimeframeButton from "../components/Button/Button";
+import { chartConfig, timeFrame } from "../chartConfiguration/chartConfig"
+import { TimeFrameOption } from "../types/interfaces/ITimeFrame"
+import { CandleOptions } from "../types/interfaces/IOhclChart";
+
+
 const CandlestickChart = () => {
+
   const [candleData, setCandleData] = useState<CandleOptions[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true)
-  const chartContainerRef = useRef<HTMLDivElement>(null);
-  const [isChartLoaded, setIsChartLoaded] = useState<boolean>(false);
-  const [timeframe, setTimeframe] = useState<string>(TimeframeEnum.ONE_WEEK);
-  const chartInstance = useRef<any>(null);
+  const [timeframe, setTimeframe] = useState("1W");
+  const chartContainerRef = React.useRef<HTMLDivElement>(null);
+  const chartInstance = React.useRef<any>(null);
+  const wss = React.useRef<WebSocket | null>(null);
+  
+  useEffect(() => {
+    return setCandleData([]);
+  }, [timeframe]);
 
   useEffect(() => {
-    const wss = connectWebSocket(timeframe, setCandleData);
+    wss.current = new WebSocket("wss://api-pub.bitfinex.com/ws/2");
+    wss.current.onopen = () => {
+      setCandleData([]);
+      const msg = JSON.stringify({
+        event: "subscribe",
+        channel: "candles",
+        key: `trade:${timeframe}:tBTCUSD`,
+      });
+      wss.current?.send(msg);
+    };
+
+    wss.current.onmessage = (event) => {
+      const candleStickData = JSON.parse(event.data);
+      if (Array.isArray(candleStickData) && Array.isArray(candleStickData[1])) {
+        if (candleStickData[1][0] instanceof Array) {
+          setCandleData(candleStickData[1].sort((a: number[], b: number[]) => a[0] - b[0]));
+        } else {
+          setCandleData((prevData) => {
+            const newData :any= [...prevData];
+            const newCandle : any= candleStickData[1];
+            const existingCandleIndex : number= newData.findIndex(
+              (candle: any) => candle[0] === newCandle[0]
+            );
+            // newData.push(newCandle);
+            if (existingCandleIndex !== -1) {
+              newData[existingCandleIndex] = newCandle
+            } else {
+              newData.push(newCandle);
+            }
+            return newData.sort((a: any, b: any) => a.time - b.time);
+          });
+        }
+      }
+    };
+
     return () => {
-      closeWebSocket(wss);
+      wss.current?.close();
     };
   }, [timeframe]);
+
   useEffect(() => {
     if (chartContainerRef.current && candleData.length > 0) {
-        setIsChartLoaded(true);
+      // if (!chartInstance.current) {
         if (chartInstance.current && chartInstance.current.removeSeries) {
           chartInstance.current.remove();
         }
@@ -42,6 +80,7 @@ const CandlestickChart = () => {
         chartInstance.current.applyOptions({
           timeScale: timeScaleOptions,
         });
+      // }
       const candlestickSeries = chartInstance.current.addCandlestickSeries();
 
       const mappedData = candleData.map((candle: any) => ({
@@ -55,7 +94,6 @@ const CandlestickChart = () => {
       mappedData.sort((a, b) => a.time - b.time);
 
       candlestickSeries?.setData(mappedData);
-      setIsLoading(false);
       const tooltipElement = document.createElement("div");
       tooltipElement.classList.add("custom-tooltip");
       chartContainerRef.current.appendChild(tooltipElement);
@@ -100,30 +138,29 @@ const CandlestickChart = () => {
         tooltipElement.innerHTML = handleTooltipContent(price, tooltipColor);
         tooltipElement.style.display = "block";
       });
-      return () => {        
+      return () => {
+        // if (chartInstance.current) chartInstance?.current?.remove();
+        
         if (tooltipElement && tooltipElement.parentNode) {
           tooltipElement.parentNode.removeChild(tooltipElement);
         }
       };
     }
-  }, [candleData, isChartLoaded]);
-
+  }, [candleData]);
+  
   return (
     <div>
       <div ref={chartContainerRef} style={{ width: "100%", height: "600px" }} />
-      {isChartLoaded && (
-        // Render the button only when the chart is loaded
-        timeFrame.map((option: TimeFrameOption) => (
-          <TimeframeButton
-            key={option.value}
-            timeframe={option.value}
-            setTimeframe={setTimeframe}
-            label={option.label}
-          />
-        ))
-      )}
+      {timeFrame.map((option: TimeFrameOption)=>(
+        <TimeframeButton   
+          key={option.value}    
+          timeframe={option.value} 
+          setTimeframe={setTimeframe} 
+          label={option.label}/>
+      ))}
     </div>
   );
 };
 
 export default CandlestickChart;
+

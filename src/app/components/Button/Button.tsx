@@ -1,7 +1,11 @@
 import React from "react";
 import { Button } from "@mui/material";
-
-const TimeframeButton = ({ timeframe, setTimeframe, label }) => {
+interface TimeframeButtonProps {
+  timeframe: string;
+  setTimeframe: (timeframe: string) => void;
+  label: string;
+}
+const TimeframeButton :React.FC<TimeframeButtonProps>= ({ timeframe, setTimeframe, label }) => {
   const handleClick = () => {
     setTimeframe(timeframe);
   };
