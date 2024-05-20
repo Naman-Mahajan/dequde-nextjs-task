@@ -38,7 +38,7 @@ export default function Home() {
       <Button
           variant="contained"
           color="primary"
-          onClick={() => handleButtonClick("/chartjs")}
+          onClick={() => handleButtonClick("/iohcl")}
         >
           Bitfinex Candle Chart
         </Button>

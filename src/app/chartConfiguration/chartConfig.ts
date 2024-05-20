@@ -22,7 +22,7 @@ const chartConfig = {overlayPriceScales: {
     ticksVisible: true,
     minimumWidth: 20,
   },
-
+  interval:"1D",
   layout: {
     background: {
       color: "#253248",

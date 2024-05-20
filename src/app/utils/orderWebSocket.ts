@@ -24,7 +24,7 @@ const useWebSocket = ( subscribeData: SubscribeData )=> {
         
         if (bookInfo && bookInfo.length > 2 && bookInfo[1] !== 'hb') {
           const [price, count, amount] = bookInfo;
-          const newOrder: Order = { price, count, amount , total: price * Math.abs(amount)};
+          const newOrder: Order = { price, count, amount: Math.abs(amount) , total: parseFloat((price * Math.abs(amount)).toFixed(2)) };
           if (count > 0) {  
             if (amount > 0) {
               setOrderBook((prevOrderBook) => ({

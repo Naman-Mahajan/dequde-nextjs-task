@@ -31,12 +31,12 @@ export interface CandleOptions {
   }
 
   export interface CustomTooltip {
-    open: number;
-    high: number;
-    low: number;
-    close: number;
-    difference: number;
-    percentage: number;
+    open: string;
+    high: string;
+    low: string;
+    close: string;
+    difference: string;
+    percentage: string;
     valueSign: string,
     profitOrLossText: string;
   }
