@@ -15,6 +15,8 @@ const CustomTooltipContent: React.FC<{content: CustomTooltip, color: string}> = 
       <div style={{ color }}>({content.profitOrLossText})</div>
     </CustomTooltipContainer>
   );
+
 };
 
 export default CustomTooltipContent;
+

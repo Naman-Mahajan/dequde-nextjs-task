@@ -19,7 +19,7 @@ import CustomTooltipContent from './CustomTooltipContent'
 
 const CandlestickChart: React.FC = () => {
 
-  let [candleData, setCandleData] = useState<CandlestickData<Time>[]>([]);
+  const [candleData, setCandleData] = useState<CandlestickData<Time>[]>([]);
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const [isChartLoaded, setIsChartLoaded] = useState<boolean>(false);
   const [timeframe, setTimeframe] = useState<string>(TimeframeEnum.ONE_WEEK);
@@ -67,38 +67,12 @@ const CandlestickChart: React.FC = () => {
       const tooltipElement = document.createElement("div");
       tooltipElement.classList.add("custom-tooltip");
       chartContainerRef.current.appendChild(tooltipElement);
-      const handleTooltipContent = (
-        price: CandlestickData,
-        tooltipColor: string
-      ) => {
-        const profitOrLoss = ((price.close - price.open) / price.open) * 100;
-        const valueDifference = price.close - price.open;
-        const valueSign = valueDifference >= 0 ? "+" : "-";
-        const profitOrLossText =
-          profitOrLoss >= 0
-            ? `+${profitOrLoss.toFixed(2)}%`
-            : `${profitOrLoss.toFixed(2)}%`;
-            const content: CustomTooltip = {
-              open: price.open,
-              high: price.high,
-              low: price.low,
-              close: price.close,
-              difference: Math.abs(valueDifference),
-              percentage: profitOrLoss,
-              valueSign: valueSign,
-              profitOrLossText: profitOrLossText
-            };
-
-           return ReactDOMServer.renderToString(
-                <CustomTooltipContent content={content} color={tooltipColor} />
-            );
-      };
-
+     
       
       chartApi.subscribeCrosshairMove((param) => {
         if (!param.time || !param.point) return;
         
-        const price= param?.seriesData?.get(candlestickSeries) as CandlestickData<Time>;
+        const price = param?.seriesData?.get(candlestickSeries) as CandlestickData<Time>;
         if (!price) return;
 
         const tooltipColor: string = price.close > price.open ? "#4bffb5" : "#ff4976";
@@ -127,6 +101,27 @@ const CandlestickChart: React.FC = () => {
   }, [candleData, isChartLoaded]);
 
 
+  const handleTooltipContent = (price: CandlestickData, tooltipColor: string) => {
+
+    const profitOrLoss = ((price.close - price.open) / price.open) * 100;
+    const valueDifference = price.close - price.open;
+    const valueSign = valueDifference >= 0 ? "+" : "-";
+    const profitOrLossText = profitOrLoss >= 0 ? `+${profitOrLoss.toFixed(2)}%` : `${profitOrLoss.toFixed(2)}%`;
+    const content: CustomTooltip = {
+          open: price.open,
+          high: price.high,
+          low: price.low,
+          close: price.close,
+          difference: Math.abs(valueDifference),
+          percentage: profitOrLoss,
+          valueSign: valueSign,
+          profitOrLossText: profitOrLossText
+        };
+
+       return ReactDOMServer.renderToString(
+            <CustomTooltipContent content={content} color={tooltipColor} />
+        );
+  };
   
   return (
     <div>

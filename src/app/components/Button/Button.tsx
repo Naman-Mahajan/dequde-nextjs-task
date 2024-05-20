@@ -14,11 +14,6 @@ transition: background-color 0.3s, color 0.3s;
   background-color: rgba(0, 0, 0, 0.5);
 }
 
-&.default {
-  background-color: rgba(0, 0, 0, 0.5);
-  color: white;
-}
-
 `;
 
 interface TimeframeButtonProps {
@@ -35,7 +30,6 @@ const TimeframeButton :React.FC<TimeframeButtonProps>= ({ timeframe, setTimefram
   return (
     <TransparentButton
       onClick={handleClick}
-      className={timeframe === '1W' ? 'default' : ''}
     >
       {label}
     </TransparentButton>

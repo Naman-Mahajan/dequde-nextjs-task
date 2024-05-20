@@ -7,6 +7,7 @@ import useOrderBook from '../../utils/orderWebSocket';
 import {StyledPaper, StyledTableContainer, Container} from "../OrderBook/OrderBook.styles"
 import { SubscribeData } from '@/app/types/interfaces/IOrderBook';
 
+
 const OrderBook: React.FC<{subscribeData: SubscribeData}> = ({subscribeData}) => {
  
 const orderBook = useOrderBook(subscribeData);
@@ -14,8 +15,8 @@ const orderBook = useOrderBook(subscribeData);
   const memoizedOrderBook = useMemo(() => (
     <>
     <StyledPaper>
-        <Container style={{ display: 'flex' }}>
-        <StyledTableContainer>
+        <Container>
+        <StyledTableContainer >
             <Typography  variant="h6" gutterBottom>Bids</Typography>
             <Table>
               <TableHead>
@@ -74,3 +75,7 @@ const orderBook = useOrderBook(subscribeData);
 };
 
 export default OrderBook;
+
+
+
+          

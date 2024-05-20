@@ -21,6 +21,7 @@ const useWebSocket = ( subscribeData: SubscribeData )=> {
       const orderBookData = JSON.parse(event.data);
       if (Array.isArray(orderBookData) && orderBookData.length > 1) {
         const [, bookInfo] = orderBookData;
+        
         if (bookInfo && bookInfo.length > 2 && bookInfo[1] !== 'hb') {
           const [price, count, amount] = bookInfo;
           const newOrder: Order = { price, count, amount , total: price * Math.abs(amount)};
