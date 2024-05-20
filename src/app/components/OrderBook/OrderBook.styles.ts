@@ -1,14 +1,20 @@
 import styled from 'styled-components';
-import {  Paper, TableContainer} from '@mui/material';
 
-const StyledPaper = styled(Paper)`
+
+export const Container = styled.div`
+  && {
+  display:flex
+  }
+`;
+
+export const StyledPaper = styled.div`
   padding: 20px;
   text-align: center;
   color: inherit;
   margin-bottom: '20px'
 `;
 
-const StyledTableContainer = styled(TableContainer)`
+export const StyledTableContainer = styled.div`
   && {
     width: 100%;
     min-widht: 100%

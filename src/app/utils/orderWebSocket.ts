@@ -3,27 +3,26 @@
 import { useEffect, useState } from 'react';
 import { OrderBookState } from '@/app/types/interfaces/IOhclChart';
 import { Order } from '@/app/types/interfaces/IOhclChart';
-const useWebSocket = (url: string) => {
-  const [orderBook, setOrderBook] = useState<OrderBookState>({ bids: [], asks: [] });
-  useEffect(() => {
-    const ws = new WebSocket(url);
+import { SubscribeData } from '@/app/types/interfaces/IOrderBook'
+
+
+const useWebSocket = ( subscribeData: SubscribeData )=> {
+
+    const [orderBook, setOrderBook] = useState<OrderBookState>({ bids: [], asks: [] });  useEffect(() => {
+      
+    const defaultWebSocketURL = 'wss://api-pub.bitfinex.com/ws/2';
+    const ws = new WebSocket(process.env.WEBSOCKET_API_URL || defaultWebSocketURL);
 
     ws.onopen = () => {
-      ws.send(JSON.stringify({
-        event: 'subscribe',
-        channel: 'book',
-        symbol: 'tBTCUSD',
-        prec: 'P0', 
-        freq: 'F0',
-      }));
+      ws.send(JSON.stringify(subscribeData));
     };
 
     ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      if (Array.isArray(data) && data.length > 1) {
-        const [, info] = data;
-        if (info && info.length > 2 && info[1] !== 'hb') {
-          const [price, count, amount] = info;
+      const orderBookData = JSON.parse(event.data);
+      if (Array.isArray(orderBookData) && orderBookData.length > 1) {
+        const [, bookInfo] = orderBookData;
+        if (bookInfo && bookInfo.length > 2 && bookInfo[1] !== 'hb') {
+          const [price, count, amount] = bookInfo;
           const newOrder: Order = { price, count, amount , total: price * Math.abs(amount)};
           if (count > 0) {  
             if (amount > 0) {
@@ -57,8 +56,9 @@ const useWebSocket = (url: string) => {
     return () => {
       ws.close();
     };
-  }, [url]);
+  }, [subscribeData]);
   return orderBook;
 };
 
 export default useWebSocket;
+

@@ -5,7 +5,7 @@ export const ChartContainer = styled.div`
   height: 600px;
 `;
 
-export const CustomTooltip = styled.div`
+export const CustomTooltipContainer = styled.div`
   display: flex;
   position: relative;
   z-index: 1;

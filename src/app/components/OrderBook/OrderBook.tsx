@@ -2,50 +2,20 @@
 
 
 import React, { useMemo } from 'react';
-import { Typography, Paper, TableContainer, Table, TableHead, TableBody, TableRow, TableCell, IconButton, Collapse } from '@mui/material';
-import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
-import styled from 'styled-components';
+import { Typography, Table, TableHead, TableBody, TableRow, TableCell } from '@mui/material';
 import useOrderBook from '../../utils/orderWebSocket';
-// import {StyledPaper, StyledTableContainer} from "../"
+import {StyledPaper, StyledTableContainer, Container} from "../OrderBook/OrderBook.styles"
+import { SubscribeData } from '@/app/types/interfaces/IOrderBook';
 
-const StyledPaper = styled(Paper)`
-  padding: 20px;
-  text-align: center;
-  color: inherit;
-  margin-bottom: '20px'
-`;
-
-const StyledTableContainer = styled(({ ...props }) => <TableContainer {...props} />)`
-  && {
-    width: 100%;
-    min-widht: 100%
-    max-width: 360px;
-    background-color: inherit;
-  }
-`;
-
-const OrderBook: React.FC = () => {
-  const defaultWebSocketURL = 'wss://api-pub.bitfinex.com/ws/2';
-  const orderBook = useOrderBook(process.env.WEBSOCKET_URL || defaultWebSocketURL);
-  const [isCollapsed, setIsCollapsed] = React.useState(false);
-
-  const handleCollapse = () => {
-    setIsCollapsed(!isCollapsed);
-  };
+const OrderBook: React.FC<{subscribeData: SubscribeData}> = ({subscribeData}) => {
+ 
+const orderBook = useOrderBook(subscribeData);
 
   const memoizedOrderBook = useMemo(() => (
-  
     <>
     <StyledPaper>
-      <Typography variant="h5" gutterBottom>
-         Order Book BTC/USD
-        <IconButton onClick={handleCollapse}>
-          {isCollapsed ? <KeyboardArrowDown /> : <KeyboardArrowUp />}
-        </IconButton>
-      </Typography>
-      <Collapse in={!isCollapsed}>
-        <div style={{ display: 'flex' }}>
-        <StyledTableContainer component={Paper}>
+        <Container style={{ display: 'flex' }}>
+        <StyledTableContainer>
             <Typography  variant="h6" gutterBottom>Bids</Typography>
             <Table>
               <TableHead>
@@ -69,7 +39,7 @@ const OrderBook: React.FC = () => {
             </Table>
           </StyledTableContainer>
         
-        <StyledTableContainer component={Paper}  >
+        <StyledTableContainer  >
             <Typography  variant="h6" gutterBottom>Asks</Typography>
             <Table>
               <TableHead>
@@ -93,12 +63,12 @@ const OrderBook: React.FC = () => {
               </TableBody>
             </Table>  
           </StyledTableContainer>
-        </div>
-      </Collapse>
+        </Container>
+  
     </StyledPaper>
     </>
   ), 
-  [orderBook, isCollapsed]);
+  [orderBook]);
 
   return memoizedOrderBook;
 };

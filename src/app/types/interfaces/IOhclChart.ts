@@ -18,3 +18,25 @@ export interface CandleOptions {
     bids: Order[];
     asks: Order[];
   }
+
+  export interface TimeFrameOption {
+    value: string;
+    label: string;
+  }
+
+  export interface SubscribeData {
+    event: string;
+    channel: string;
+    key: string;
+  }
+
+  export interface CustomTooltip {
+    open: number;
+    high: number;
+    low: number;
+    close: number;
+    difference: number;
+    percentage: number;
+    valueSign: string,
+    profitOrLossText: string;
+  }

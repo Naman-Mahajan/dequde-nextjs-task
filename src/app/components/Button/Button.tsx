@@ -1,5 +1,4 @@
 import React from "react";
-import { Button } from "@mui/material";
 import styled from 'styled-components';
 
 const TransparentButton = styled.button`
@@ -21,11 +20,13 @@ transition: background-color 0.3s, color 0.3s;
 }
 
 `;
+
 interface TimeframeButtonProps {
   timeframe: string;
   setTimeframe: (timeframe: string) => void;
   label: string;
 }
+
 const TimeframeButton :React.FC<TimeframeButtonProps>= ({ timeframe, setTimeframe, label }) => {
   const handleClick = () => {
     setTimeframe(timeframe);
@@ -35,7 +36,6 @@ const TimeframeButton :React.FC<TimeframeButtonProps>= ({ timeframe, setTimefram
     <TransparentButton
       onClick={handleClick}
       className={timeframe === '1W' ? 'default' : ''}
-
     >
       {label}
     </TransparentButton>
