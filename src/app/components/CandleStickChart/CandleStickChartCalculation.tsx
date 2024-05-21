@@ -38,7 +38,7 @@ export const getLogicalRange = (timeframe: string, candleData: Candlestick[]) =>
         } 
   
         if(timeframe !== Timeframe.ONE_WEEK){
-          logicalRange = { from: startIndex+1, to: candleData.length - 1 };
+          logicalRange = { from: startIndex, to: candleData.length - 1 };
         }
         return logicalRange
      

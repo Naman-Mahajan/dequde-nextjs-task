@@ -6,11 +6,11 @@ import { Typography, Table, TableHead, TableBody, TableRow, TableCell } from '@m
 import useOrderBook from '../../utils/orderWebSocket';
 import {StyledPaper, StyledTableContainer, Container} from "../OrderBook/OrderBook.styles"
 import { SubscribeData } from '@/app/types/interfaces/IOrderBook';
-
+import { defaultWebSocketURL } from '@/app/utils/webSocketUrl';
 
 const OrderBook: React.FC<{subscribeData: SubscribeData}> = ({subscribeData}) => {
  
-const orderBook = useOrderBook(subscribeData);
+const orderBook = useOrderBook(subscribeData, process.env.WEBSOCKET_API_URL || defaultWebSocketURL);
 
   const memoizedOrderBook = useMemo(() => (
     <>

@@ -40,7 +40,7 @@ export const connectWebSocket = (
           const existingCandleIndex: number = newData.findIndex(
             (candle) => candle.time === (newCandle[0] / 1000)
           );
-          let CandleObj = {
+          let candleObj = {
             time: (newCandle[0] / 1000) as Time,
             open: newCandle[1],
             close: newCandle[2],
@@ -48,9 +48,9 @@ export const connectWebSocket = (
             low: newCandle[4],
           }
           if (existingCandleIndex !== -1) {
-            newData[existingCandleIndex] = CandleObj
+            newData[existingCandleIndex] = candleObj
           } else {
-            newData.push(CandleObj);
+            newData.push(candleObj);
           }
           return newData.sort((a, b) => Number(a.time) - Number(b.time));
         });

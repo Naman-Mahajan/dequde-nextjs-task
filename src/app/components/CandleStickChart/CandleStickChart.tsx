@@ -16,6 +16,10 @@
   import { ChartContainer, Spacer } from "./CandlestickChart.styles";
   import { getLogicalRange } from "./CandleStickChartCalculation";
   import { handleTooltipContent } from "./CandleStickChartCalculation";
+  import { defaultWebSocketURL } from '@/app/utils/webSocketUrl';
+
+
+
   const CandlestickChart: React.FC = () => {
 
     const [candleData, setCandleData] = useState<CandlestickData<Time>[]>([]);
@@ -24,8 +28,6 @@
     const [timeframe, setTimeframe] = useState<string>(Timeframe.ONE_WEEK);
     let [chartApi, setChartApi] = useState<IChartApi>() ;
     
-    const defaultWebSocketURL = 'wss://api-pub.bitfinex.com/ws/2';
-  
     const subscribeData: SubscribeData = {
       event: SUBSCRIBE_KEY,
       channel: CHANNEL_KEY,
@@ -132,3 +134,4 @@
   };
 
   export default CandlestickChart;
+

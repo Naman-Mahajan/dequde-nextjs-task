@@ -6,12 +6,10 @@ import { Order } from '@/app/types/interfaces/IOhclChart';
 import { SubscribeData } from '@/app/types/interfaces/IOrderBook'
 
 
-const useWebSocket = ( subscribeData: SubscribeData )=> {
+const useWebSocket = ( subscribeData: SubscribeData , url: string)=> {
 
     const [orderBook, setOrderBook] = useState<OrderBookState>({ bids: [], asks: [] });  useEffect(() => {
-      
-    const defaultWebSocketURL = 'wss://api-pub.bitfinex.com/ws/2';
-    const ws = new WebSocket(process.env.WEBSOCKET_API_URL || defaultWebSocketURL);
+    const ws = new WebSocket(url);
 
     ws.onopen = () => {
       ws.send(JSON.stringify(subscribeData));
