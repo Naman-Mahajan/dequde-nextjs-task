@@ -1,20 +1,22 @@
-import styled from "styled-components";
+import { makeStyles } from "@mui/styles";
 
-export const ChartContainer = styled.div`
-  width: 100%;
-  height: 600px;
-`;
+const useStyles = makeStyles({
+  chartContainer: {
+    width: "100%",
+    height: "600px",
+  },
+  customTooltipContainer: {
+    display: "flex",
+    position: "relative",
+    zIndex: 1,
+    gap: "2em",
+    top: "-37em",
+    left: "2em",
+  },
+  spacer: {
+    width: "4px",
+    display: "inline-block",
+  },
+});
 
-export const CustomTooltipContainer = styled.div`
-  display: flex;
-  position: relative;
-  z-index: 1;
-  gap: 2em;
-  top: -37em;
-  left: 2em;
-`;
-
-export const Spacer = styled.div`
-  width: 4px;
-  display: inline-block;
-`;
+export default useStyles;

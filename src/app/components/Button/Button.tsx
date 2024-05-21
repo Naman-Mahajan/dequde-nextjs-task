@@ -1,18 +1,6 @@
 import React from "react";
-import styled from 'styled-components';
-interface TransparentButtonProps {
-  selected: boolean;
-}
-
-const TransparentButton = styled.button<TransparentButtonProps>`
-background-color: ${({ selected }) => selected ? 'blue' : 'transparent'};
-  border: none;
-  color: ${({ selected }) => selected ? 'white' : 'black'};
-  font-size: 14px;
-  padding: 8px 16px;
-  cursor: pointer;
-  transition: background-color 0.3s, color 0.3s;
-`;
+import { makeStyles } from "@mui/styles";
+import { Button } from "@mui/material";
 
 interface TimeframeButtonProps {
   timeframe: string;
@@ -21,18 +9,33 @@ interface TimeframeButtonProps {
   selected: boolean;
 }
 
-const TimeframeButton :React.FC<TimeframeButtonProps>= ({ timeframe, setTimeframe, label, selected }) => {
+const useStyles = makeStyles({
+  transparentButton: (props: { selected: boolean }) => ({
+    backgroundColor: props.selected ? "blue" : "transparent",
+    color: props.selected ? "white" : "black",
+    fontSize: 14,
+    padding: "8px 16px",
+    "&:hover": {
+      backgroundColor: props.selected ? "blue" : "lightblue",
+    },
+  }),
+});
+
+const TimeframeButton: React.FC<TimeframeButtonProps> = ({
+  timeframe,
+  setTimeframe,
+  label,
+  selected,
+}) => {
+  const classes = useStyles({ selected });
   const handleClick = () => {
     setTimeframe(timeframe);
   };
 
   return (
-    <TransparentButton
-      onClick={handleClick}
-      selected={selected}
-    >
+    <Button className={classes.transparentButton} onClick={handleClick}>
       {label}
-    </TransparentButton>
+    </Button>
   );
 };
 

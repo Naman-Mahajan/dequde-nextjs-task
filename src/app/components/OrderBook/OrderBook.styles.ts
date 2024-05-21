@@ -1,22 +1,21 @@
-import styled from 'styled-components';
+import { makeStyles } from '@mui/styles';
 
+const useStyles = makeStyles((theme) => ({
+  container: {
+    display: 'flex',
+  },
+  paper: {
+    padding: 20,
+    textAlign: 'center',
+    color: 'inherit',
+    marginBottom: 20,
+  },
+  tableContainer: {
+    width: '100%',
+    minWidth: '100%',
+    maxWidth: 360,
+    backgroundColor: 'inherit',
+  },
+}));
 
-export const Container = styled.div`
-  display:flex
-`;
-
-export const StyledPaper = styled.div`
-  padding: 20px;
-  text-align: center;
-  color: inherit;
-  margin-bottom: '20px'
-`;
-
-export const StyledTableContainer = styled.div`
-  && {
-    width: 100%;
-    min-widht: 100%
-    max-width: 360px;
-    background-color: inherit;
-  }
-`;
+export default useStyles;

@@ -2,26 +2,19 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation'
-
+import { Routes } from '@/app/constants/routes';
 const Header: React.FC = () => {
   const pathname = usePathname()
 
-  if (pathname === '/') {
+  if (![Routes.BitfinexCandleChart, Routes.BitfinexOrderBook].some(route => route === pathname)) {
     return null;
   }
 
   return (
-    <header>
-    <nav>
-      <ul>
-        <li>
-          <Link href="/">Home</Link>
-        </li>
-      </ul>
-    </nav>
-    
+  <header>
+      <Link href="/">Home</Link>
   </header>
   );
 };
 
-export default Header;
+export default Header; 

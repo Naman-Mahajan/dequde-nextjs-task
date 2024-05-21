@@ -1,11 +1,7 @@
 import CandlestickChart from "../components/CandleStickChart/CandleStickChart";
 
-export default function Home() {
-    return (
-      <div>
-        <CandlestickChart 
-          
-        />
-    </div>
-    );
-  }
+const CandlestickPage = () => {
+  return <CandlestickChart />;
+};
+
+export default CandlestickPage;

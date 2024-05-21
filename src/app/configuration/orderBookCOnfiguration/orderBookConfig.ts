@@ -1,0 +1,7 @@
+const EVENT_KEY = "subscribe";
+const CHANNEL_KEY = "book";
+const SYMBOL_KEY = "tBTCUSD";
+const PRECISION_KEY = "P0";
+const FREQUENCY_KEY = "F0";
+
+export { EVENT_KEY, CHANNEL_KEY, SYMBOL_KEY, PRECISION_KEY, FREQUENCY_KEY };
