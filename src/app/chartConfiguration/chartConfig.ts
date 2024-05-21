@@ -1,17 +1,17 @@
 import { CrosshairMode } from "lightweight-charts";
 import { TimeFrameOption } from "../types/interfaces/IOhclChart"
-import { TimeframeEnum } from "./enum"
+import { Timeframe } from "./enum"
 
-const timeFrame : TimeFrameOption[] = [
-  { value: TimeframeEnum.ONE_WEEK, label: "3y"  },
-  { value: TimeframeEnum.ONE_DAY, label: "1y" },
-  { value: TimeframeEnum.TWELVE_HOUR, label: "3m" },
-  { value: TimeframeEnum.SIX_HOUR, label: "1m" },
-  { value: TimeframeEnum.ONE_HOUR, label: "7d" },
-  { value: TimeframeEnum.THIRTY_MIN, label: "3d" },
-  { value: TimeframeEnum.FIFTEEN_MIN, label: "1d" },
-  { value: TimeframeEnum.FIVE_MIN, label: "6h" },
-  { value: TimeframeEnum.ONE_MIN, label: "1h" },
+const timeFrameOptions : TimeFrameOption[] = [
+  { value: Timeframe.ONE_WEEK, label: "3y"  },
+  { value: Timeframe.ONE_DAY, label: "1y" },
+  { value: Timeframe.TWELVE_HOUR, label: "3m" },
+  { value: Timeframe.SIX_HOUR, label: "1m" },
+  { value: Timeframe.ONE_HOUR, label: "7d" },
+  { value: Timeframe.THIRTY_MIN, label: "3d" },
+  { value: Timeframe.FIFTEEN_MIN, label: "1d" },
+  { value: Timeframe.FIVE_MIN, label: "6h" },
+  { value: Timeframe.ONE_MIN, label: "1h" },
 ];
 
 const SUBSCRIBE_KEY = "subscribe";
@@ -48,5 +48,5 @@ const chartConfig = {overlayPriceScales: {
     borderColor: "#485c7b",
   }}
 
-  export { chartConfig, timeFrame , SUBSCRIBE_KEY, CHANNEL_KEY};
+  export { chartConfig, timeFrameOptions , SUBSCRIBE_KEY, CHANNEL_KEY};
 

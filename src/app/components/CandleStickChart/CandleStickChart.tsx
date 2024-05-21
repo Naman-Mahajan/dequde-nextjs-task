@@ -11,18 +11,17 @@
   import { chartConfig } from "../../chartConfiguration/chartConfig";
   import { SubscribeData, TimeFrameOption, CustomTooltip } from "../../types/interfaces/IOhclChart";
   import { connectWebSocket, closeWebSocket } from "../../utils/chartWebsocket";
-  import { timeFrame, SUBSCRIBE_KEY, CHANNEL_KEY } from "@/app/chartConfiguration/chartConfig";
-  import { TimeframeEnum } from "@/app/chartConfiguration/enum";
+  import { timeFrameOptions, SUBSCRIBE_KEY, CHANNEL_KEY } from "@/app/chartConfiguration/chartConfig";
+  import { Timeframe } from "@/app/chartConfiguration/enum";
   import { ChartContainer, Spacer } from "./CandlestickChart.styles";
-  import ReactDOMServer from 'react-dom/server';
-  import CustomTooltipContent from './CustomTooltipContent'
-
+  import { getLogicalRange } from "./CandleStickChartCalculation";
+  import { handleTooltipContent } from "./CandleStickChartCalculation";
   const CandlestickChart: React.FC = () => {
 
     const [candleData, setCandleData] = useState<CandlestickData<Time>[]>([]);
     const chartContainerRef = useRef<HTMLDivElement>(null);
     const [isChartLoaded, setIsChartLoaded] = useState<boolean>(false);
-    const [timeframe, setTimeframe] = useState<string>(TimeframeEnum.ONE_WEEK);
+    const [timeframe, setTimeframe] = useState<string>(Timeframe.ONE_WEEK);
     let [chartApi, setChartApi] = useState<IChartApi>() ;
     
     const defaultWebSocketURL = 'wss://api-pub.bitfinex.com/ws/2';
@@ -50,16 +49,11 @@
         chartApi = createChart(chartContainerRef.current, {
           width: chartContainerRef.current.clientWidth,
           height: chartContainerRef.current.clientHeight,
-        
           ...chartConfig,
         });
         const timeScaleOptions = {
           timeVisible: true,
-          // rightOffset: 12,
-          // barSpacing: 3,
-          // fixLeftEdge: true,
-          // lockVisibleTimeRangeOnResize: false,
-          // rightBarStaysOnScroll: true,
+          barSpacing: 15
         };
         chartApi?.applyOptions({
           timeScale: timeScaleOptions,
@@ -75,45 +69,7 @@
       
         candlestickSeries?.setData(candleData);
 
-        let logicalRange = { from: 0, to: candleData.length - 1 };
-    
-        if (timeframe === "1m") {
-          const startIndex = Math.max(0, candleData.length - 60); 
-          logicalRange = { from: startIndex, to: candleData.length - 1 };
-        } else if (timeframe === "5m") {
-          const startIndex = Math.max(0, candleData.length - (6 * 60 / 5));
-          logicalRange = { from: startIndex, to: candleData.length - 1 };
-
-        } else if (timeframe === "15m") {
-          const startIndex = Math.max(0, candleData.length - (24 * 60 / 15));
-          logicalRange = { from: startIndex, to: candleData.length - 1 };
-        } else if (timeframe === "30m") {
-          const startIndex = Math.max(0, candleData.length - (3 * 24 * 60 / 30));
-          logicalRange = { from: startIndex, to: candleData.length - 1 };
-        } else if (timeframe === "1h") {
-          const startIndex = Math.max(0, candleData.length - 7 * 24); 
-          logicalRange = { from: startIndex, to: candleData.length - 1 };
-        } else if (timeframe === "6h") {
-          const numberOfDataPoints = 30 * 24 / 6; 
-          const startIndex = Math.max(0, candleData.length - numberOfDataPoints);
-          logicalRange = { from: startIndex, to: candleData.length - 1 };
-        } else if (timeframe === "12h") {
-          const numberOfDataPoints = 3 * 30 * 24 / 12; 
-          const startIndex = Math.max(0, candleData.length - numberOfDataPoints);
-          logicalRange = { from: startIndex, to: candleData.length - 1 };
-        } else if (timeframe === "1D") {
-          const numberOfDataPoints = 365;
-          const startIndex = Math.max(0, candleData.length - numberOfDataPoints);
-      
-         logicalRange = { from: startIndex, to: candleData.length - 1 };
-        } else if (timeframe === "1W") {
-          const numberOfDataPoints = 3 * 52;
-          const startIndex = Math.max(0, candleData.length - numberOfDataPoints);
-      
-          if (startIndex !== 0) {
-            logicalRange = { from: startIndex, to: candleData.length - 1 };
-          }
-        } 
+        let logicalRange = getLogicalRange(timeframe, candleData)
     
         chartApi.timeScale().setVisibleLogicalRange(logicalRange);
 
@@ -152,38 +108,13 @@
 
       }
     }, [candleData, isChartLoaded, timeframe]);
-
-
-
-    
    
-    const handleTooltipContent = (price: CandlestickData, tooltipColor: string) => {
-
-      const profitOrLoss = ((price.close - price.open) / price.open) * 100;
-      const valueDifference = price.close - price.open;
-      const valueSign = valueDifference >= 0 ? "+" : "-";
-      const profitOrLossText = profitOrLoss >= 0 ? `+${profitOrLoss.toFixed(2)}%` : `${profitOrLoss.toFixed(2)}%`;
-      const content: CustomTooltip = {
-            open: price.open.toFixed(2),
-            high: price.high.toFixed(2),
-            low: price.low.toFixed(2),
-            close: price.close.toFixed(2),
-            difference: Math.abs(valueDifference).toFixed(),
-            percentage: profitOrLoss.toFixed(2),
-            valueSign: valueSign,
-            profitOrLossText: profitOrLossText
-          };
-
-        return ReactDOMServer.renderToString(
-              <CustomTooltipContent content={content} color={tooltipColor} />
-          );
-    };
     
     return (
       <div>
         <ChartContainer ref={chartContainerRef} />
         {isChartLoaded && (
-          timeFrame.map((option: TimeFrameOption, index) => (
+          timeFrameOptions.map((option: TimeFrameOption, index) => (
             <React.Fragment key={option.value}>
             <TimeframeButton
               
@@ -192,11 +123,10 @@
               label={option.label}
               selected={timeframe===option.value}
             />
-            {index < timeFrame.length - 1 && <Spacer />}
+            {index < timeFrameOptions.length - 1 && <Spacer />}
             </React.Fragment>
           ))
         )}
-        
       </div>
     );
   };

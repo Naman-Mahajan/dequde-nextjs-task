@@ -1,11 +1,9 @@
-export interface CandleOptions {
-    time: number;
-    open: number;
-    close: number;
-    high: number;
-    low: number;
-  }
-  
+export interface Candlestick  {
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+};
 
   export interface Order {
     price: number;

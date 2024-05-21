@@ -1,4 +1,4 @@
-export enum TimeframeEnum {
+export enum Timeframe {
     ONE_HOUR = "1h",
     ONE_DAY = "1D",
     ONE_WEEK = "1W",
