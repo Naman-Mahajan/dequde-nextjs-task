@@ -1,10 +1,10 @@
 import React from 'react';
-import  useStyles  from './CandlestickChart.styles';
+import useStyles from './CandlestickChart.styles';
 import { CustomTooltip } from "../../types/interfaces/IOhclChart";
-import { Box , Paper} from '@mui/material';
+import { Box, Paper } from '@mui/material';
 
 
-const CustomTooltipContent: React.FC<{content: CustomTooltip, color: string}> = ({ content, color }) => {
+const CustomTooltipContent: React.FC<{ content: CustomTooltip, color: string }> = ({ content, color }) => {
   const classes = useStyles();
 
   return (
@@ -19,7 +19,7 @@ const CustomTooltipContent: React.FC<{content: CustomTooltip, color: string}> = 
       </Box>
     </Box>
   );
-
 };
 
 export default CustomTooltipContent;
+

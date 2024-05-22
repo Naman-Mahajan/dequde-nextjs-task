@@ -1,72 +1,49 @@
 import { Timeframe } from "@/app/configuration/chartConfiguration/enum";
-import { Candlestick, CustomTooltip } from "@/app/types/interfaces/IOhclChart";
 import { CandlestickData } from "lightweight-charts";
 import ReactDOMServer from "react-dom/server";
 import CustomTooltipContent from "./CustomTooltipContent";
+import { Candlestick } from "@/app/types/interfaces/IOhclChart";
 
-export const getLogicalRange = (
-   timeframe: string,
-   candleData: Candlestick[]
-) => {
-   let logicalRange = { from: 0, to: candleData.length - 1 };
-   let startIndex: number = Number();
-
-   if (timeframe === Timeframe.ONE_MIN) {
-      startIndex = Math.max(0, candleData.length - 60);
-   } else if (timeframe === Timeframe.FIVE_MIN) {
-      startIndex = Math.max(0, candleData.length - (6 * 60) / 5);
-   } else if (timeframe === Timeframe.FIFTEEN_MIN) {
-      startIndex = Math.max(0, candleData.length - (24 * 60) / 15);
-   } else if (timeframe === Timeframe.THIRTY_MIN) {
-      startIndex = Math.max(0, candleData.length - (3 * 24 * 60) / 30);
-   } else if (timeframe === Timeframe.ONE_HOUR) {
-      startIndex = Math.max(0, candleData.length - 7 * 24);
-   } else if (timeframe === Timeframe.SIX_HOUR) {
-      const numberOfDataPoints = (30 * 24) / 6;
-      startIndex = Math.max(0, candleData.length - numberOfDataPoints);
-   } else if (timeframe === Timeframe.TWELVE_HOUR) {
-      const numberOfDataPoints = (3 * 30 * 24) / 12;
-      startIndex = Math.max(0, candleData.length - numberOfDataPoints);
-   } else if (timeframe === Timeframe.ONE_DAY) {
-      const numberOfDataPoints = 365;
-      startIndex = Math.max(0, candleData.length - numberOfDataPoints);
-   } else if (timeframe === Timeframe.ONE_WEEK) {
-      const numberOfDataPoints = 3 * 52;
-      startIndex = Math.max(0, candleData.length - numberOfDataPoints);
-      if (startIndex !== 0) {
-         logicalRange = { from: startIndex - 1, to: candleData.length - 1 };
-      }
-   }
-
-   if (timeframe !== Timeframe.ONE_WEEK) {
-      logicalRange = { from: startIndex, to: candleData.length - 1 };
-   }
-   return logicalRange;
+const getTimeframeRange = (timeframe: string, candleDataLength: number) => {
+    const timeframeMap: { [key: string]: number } = {
+        [Timeframe.ONE_MIN]: 60,
+        [Timeframe.FIVE_MIN]: (6 * 60) / 5,
+        [Timeframe.FIFTEEN_MIN]: (24 * 60) / 15,
+        [Timeframe.THIRTY_MIN]: (3 * 24 * 60) / 30,
+        [Timeframe.ONE_HOUR]: 7 * 24,
+        [Timeframe.SIX_HOUR]: (30 * 24) / 6,
+        [Timeframe.TWELVE_HOUR]: (3 * 30 * 24) / 12,
+        [Timeframe.ONE_DAY]: 365,
+        [Timeframe.ONE_WEEK]: 3 * 52,
+    };
+    const numberOfDataPoints = timeframeMap[timeframe] || 0;
+    const startIndex = Math.max(0, candleDataLength - numberOfDataPoints);
+    return timeframe === Timeframe.ONE_WEEK
+        ? { from: startIndex - 1, to: candleDataLength - 1 }
+        : { from: startIndex , to: candleDataLength - 1 };
 };
 
-export const handleTooltipContent = (
-   price: CandlestickData,
-   tooltipColor: string
-) => {
-   const profitOrLoss = ((price.close - price.open) / price.open) * 100;
-   const valueDifference = price.close - price.open;
-   const valueSign = valueDifference >= 0 ? "+" : "-";
-   const profitOrLossText =
-      profitOrLoss >= 0
-         ? `+${profitOrLoss.toFixed(2)}%`
-         : `${profitOrLoss.toFixed(2)}%`;
-   const content: CustomTooltip = {
-      open: price.open.toFixed(2),
-      high: price.high.toFixed(2),
-      low: price.low.toFixed(2),
-      close: price.close.toFixed(2),
-      difference: Math.abs(valueDifference).toFixed(),
-      percentage: profitOrLoss.toFixed(2),
-      valueSign: valueSign,
-      profitOrLossText: profitOrLossText,
-   };
+export const getLogicalRange = (timeframe: string, candleData: Candlestick[]) => {
+    const { length } = candleData;
+    const { from, to } = getTimeframeRange(timeframe, length);
+    return { from, to };
+};
 
-   return ReactDOMServer.renderToString(
-      <CustomTooltipContent content={content} color={tooltipColor} />
-   );
+export const handleTooltipContent = (price: CandlestickData, tooltipColor: string) => {
+    const { open, high, low, close } = price;
+    const valueDifference = close - open;
+    const profitOrLoss = ((close - open) / open) * 100;
+    const valueSign = valueDifference >= 0 ? "+" : "-";
+    const profitOrLossText = profitOrLoss >= 0 ? `+${profitOrLoss.toFixed(2)}%` : `${profitOrLoss.toFixed(2)}%`;
+    const content = {
+        open: open.toFixed(2),
+        high: high.toFixed(2),
+        low: low.toFixed(2),
+        close: close.toFixed(2),
+        difference: Math.abs(valueDifference).toFixed(),
+        percentage: profitOrLoss.toFixed(2),
+        valueSign,
+        profitOrLossText,
+    };
+    return ReactDOMServer.renderToString(<CustomTooltipContent content={content} color={tooltipColor} />);
 };

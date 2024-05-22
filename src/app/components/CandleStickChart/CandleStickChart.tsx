@@ -28,8 +28,8 @@ import { Box, Paper } from "@mui/material";
 
 const CandlestickChart: React.FC = () => {
   const classes = useStyles();
-  const [candleData, setCandleData] = useState<CandlestickData<Time>[]>([]);
   const chartContainerRef = useRef<HTMLDivElement>(null);
+  const [candleData, setCandleData] = useState<CandlestickData<Time>[]>([]);
   const [isChartLoaded, setIsChartLoaded] = useState<boolean>(false);
   const [timeframe, setTimeframe] = useState<string>(Timeframe.ONE_WEEK);
   let [chartApi, setChartApi] = useState<IChartApi>();
@@ -91,21 +91,17 @@ const CandlestickChart: React.FC = () => {
       chartApi.subscribeCrosshairMove((param) => {
         if (!param.time || !param.point) return;
 
-        const price = param?.seriesData?.get(
-          candlestickSeries
-        ) as CandlestickData<Time>;
+        const price = param?.seriesData?.get(candlestickSeries) as CandlestickData<Time>;
         if (!price) return;
 
-        const tooltipColor: string =
-          price.close > price.open ? "#4bffb5" : "#ff4976";
+        const tooltipColor: string = price.close > price.open ? "#4bffb5" : "#ff4976";
 
         const chartRect = chartContainerRef?.current?.getBoundingClientRect();
         const chartLeft = chartRect?.left ?? 0 + window.scrollX;
         const chartTop = chartRect?.top ?? 0 + window.scrollY;
 
         const tooltipX = param.point.x - chartLeft + 10;
-        const tooltipY =
-          param.point.y - chartTop - tooltipElement.offsetHeight - 10;
+        const tooltipY = param.point.y - chartTop - tooltipElement.offsetHeight - 10;
 
         tooltipElement.style.left = `${tooltipX}px`;
         tooltipElement.style.top = `${tooltipY}px`;

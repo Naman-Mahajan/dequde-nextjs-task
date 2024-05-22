@@ -9,12 +9,14 @@ const Header: React.FC = () => {
   if (![Routes.BitfinexCandleChart, Routes.BitfinexOrderBook].some(route => route === pathname)) {
     return null;
   }
-
+ 
   return (
-  <header>
+    <header>
       <Link href="/">Home</Link>
-  </header>
+    </header>
   );
 };
 
-export default Header; 
+export default Header;
+
+

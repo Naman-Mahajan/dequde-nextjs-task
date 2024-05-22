@@ -16,7 +16,7 @@ const OrderBook: React.FC<{ subscribeData: SubscribeData }> = ({ subscribeData }
   const memoizedOrderBook = useMemo(() => (
       <Paper className={classes.paper}>
         <Grid container spacing={2}>
-          <Grid item xs={12} md={6}>
+          <Grid item className={classes.grid}>
             <Paper className={classes.tableContainer}>
               <Typography variant="h6" gutterBottom>Bids</Typography>
               <Table>
@@ -42,7 +42,7 @@ const OrderBook: React.FC<{ subscribeData: SubscribeData }> = ({ subscribeData }
             </Paper>
           </Grid>
 
-          <Grid item xs={12} md={6}>
+          <Grid item className={classes.grid}>
             <Paper className={classes.tableContainer}>
               <Typography variant="h6" gutterBottom>Asks</Typography>
               <Table>
@@ -76,5 +76,3 @@ const OrderBook: React.FC<{ subscribeData: SubscribeData }> = ({ subscribeData }
 };
 
 export default OrderBook;
-
-

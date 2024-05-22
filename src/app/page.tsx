@@ -23,7 +23,11 @@ const useStyles = makeStyles(() => ({
     flexDirection: 'row',
     justifyContent: 'center'
   },
-}));
+  gridSpacing: {
+    '& > *': {
+      margin: '0 10px',
+    },
+}}));
 
 const Home = () => {
   const classes = useStyles();
@@ -31,7 +35,7 @@ const Home = () => {
 
   return (
     <Container className={classes.container}>
-      <Grid container spacing={2} className={classes.buttonContainer}>
+      <Grid container  className={`${classes.buttonContainer} ${classes.gridSpacing}`}>
         <Grid item>
           <Button
             variant="contained"
@@ -56,4 +60,3 @@ const Home = () => {
 };
 
 export default Home;
-
