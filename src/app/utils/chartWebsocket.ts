@@ -58,7 +58,6 @@ export const connectWebSocket = (
       }
     }
   };
-
   return wss;
 };
 

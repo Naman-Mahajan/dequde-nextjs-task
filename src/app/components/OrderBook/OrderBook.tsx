@@ -1,6 +1,5 @@
 "use client";
 
-
 import React, { useMemo } from 'react';
 import { Typography, Table, TableHead, TableBody, TableRow, TableCell, Paper, Grid } from '@mui/material';
 import useOrderBook from '../../utils/orderWebSocket';

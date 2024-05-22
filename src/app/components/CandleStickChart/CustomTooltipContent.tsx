@@ -3,10 +3,8 @@ import useStyles from './CandlestickChart.styles';
 import { CustomTooltip } from "../../types/interfaces/IOhclChart";
 import { Box, Paper } from '@mui/material';
 
-
 const CustomTooltipContent: React.FC<{ content: CustomTooltip, color: string }> = ({ content, color }) => {
   const classes = useStyles();
-
   return (
     <Box>
       <Box className={classes.customTooltipContainer}>

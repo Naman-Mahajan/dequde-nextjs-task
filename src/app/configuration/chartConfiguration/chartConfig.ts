@@ -1,6 +1,6 @@
 import { CrosshairMode } from "lightweight-charts";
-import { TimeFrameOption } from "../../types/interfaces/IOhclChart"
-import { Timeframe } from "./enum"
+import { TimeFrameOption } from "../../types/interfaces/IOhclChart";
+import { Timeframe } from "./enum";
 
 const timeFrameOptions: TimeFrameOption[] = [
   { value: Timeframe.ONE_WEEK, label: "3y" },
@@ -15,9 +15,7 @@ const timeFrameOptions: TimeFrameOption[] = [
 ];
 
 const SUBSCRIBE_KEY = "subscribe";
-
 const CHANNEL_KEY = "candles";
-
 const chartConfig = {
   overlayPriceScales: {
     ticksVisible: true,
@@ -47,8 +45,7 @@ const chartConfig = {
   },
   timeScale: {
     borderColor: "#485c7b",
-  }
-}
+  },
+};
 
 export { chartConfig, timeFrameOptions, SUBSCRIBE_KEY, CHANNEL_KEY };
-

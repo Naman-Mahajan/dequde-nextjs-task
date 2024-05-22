@@ -7,7 +7,7 @@ import {
   Time,
   createChart,
 } from "lightweight-charts";
-import TimeframeButton from "../Button/Button";
+import TimeframeButton from "../Button/TimeframeButton";
 import { chartConfig } from "../../configuration/chartConfiguration/chartConfig";
 import {
   SubscribeData,
@@ -75,13 +75,9 @@ const CandlestickChart: React.FC = () => {
       });
 
       setChartApi(chartApi);
-
       const candlestickSeries = chartApi?.addCandlestickSeries();
-
       candlestickSeries?.setData(candleData);
-
       let logicalRange = getLogicalRange(timeframe, candleData);
-
       chartApi.timeScale().setVisibleLogicalRange(logicalRange);
 
       const tooltipElement = document.createElement("div");
@@ -116,7 +112,7 @@ const CandlestickChart: React.FC = () => {
         }
       };
     }
-  }, [candleData, isChartLoaded, timeframe]);
+  }, [candleData, isChartLoaded, timeframe]);TimeframeButton
 
   return (
     <Box>
