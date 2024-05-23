@@ -9,3 +9,11 @@ export enum Timeframe {
     ONE_MIN = '1m',
     FIFTEEN_MIN = '15m'
   }
+
+export enum CandleIndexs {
+  TIME_INDEX = '0',
+  OPEN_INDEX = 1,
+  CLOSE_INDEX = 2,
+  HIGH_INDEX = 3,
+  LOW_INDEX = 4
+}

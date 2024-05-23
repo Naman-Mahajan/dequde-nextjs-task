@@ -1,7 +1,5 @@
 import { Timeframe } from "@/app/configuration/chartConfiguration/enum";
 import { CandlestickData } from "lightweight-charts";
-import ReactDOMServer from "react-dom/server";
-import CustomTooltipContent from "./CustomTooltipContent";
 import { Candlestick } from "@/app/types/interfaces/IOhclChart";
 
 const getTimeframeRange = (timeframe: string, candleDataLength: number) => {
@@ -29,21 +27,21 @@ export const getLogicalRange = (timeframe: string, candleData: Candlestick[]) =>
     return { from, to };
 };
 
-export const handleTooltipContent = (price: CandlestickData, tooltipColor: string) => {
+export const handleTooltipContent = (price: CandlestickData) => {
     const { open, high, low, close } = price;
     const valueDifference = close - open;
     const profitOrLoss = ((close - open) / open) * 100;
     const valueSign = valueDifference >= 0 ? "+" : "-";
     const profitOrLossText = profitOrLoss >= 0 ? `+${profitOrLoss.toFixed(2)}%` : `${profitOrLoss.toFixed(2)}%`;
     const content = {
-        open: open.toFixed(2),
-        high: high.toFixed(2),
-        low: low.toFixed(2),
-        close: close.toFixed(2),
+        open: open,
+        high: high,
+        low: low,
+        close: close,
         difference: Math.abs(valueDifference).toFixed(),
         percentage: profitOrLoss.toFixed(2),
         valueSign,
         profitOrLossText,
     };
-    return ReactDOMServer.renderToString(<CustomTooltipContent content={content} color={tooltipColor} />);
+    return content;
 };

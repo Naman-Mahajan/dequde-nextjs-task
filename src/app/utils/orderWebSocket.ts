@@ -39,7 +39,7 @@ const useWebSocket = (subscribeData: SubscribeData, url: string) => {
                     (order) => order.price !== price
                   ),
                   newOrder,
-                ],
+                ].sort((a, b) => b.price - a.price),
               }));
             } else {
               setOrderBook((prevOrderBook) => ({
@@ -49,7 +49,7 @@ const useWebSocket = (subscribeData: SubscribeData, url: string) => {
                     (order) => order.price !== price
                   ),
                   newOrder,
-                ],
+                ].sort((a, b) => a.price - b.price),
               }));
             }
           } else {

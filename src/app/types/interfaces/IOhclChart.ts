@@ -29,10 +29,10 @@ export interface SubscribeData {
 }
 
 export interface CustomTooltip {
-  open: string;
-  high: string;
-  low: string;
-  close: string;
+  open: number;
+  high: number;
+  low: number;
+  close:  number;
   difference: string;
   percentage: string;
   valueSign: string;

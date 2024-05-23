@@ -4,12 +4,15 @@ import React, { useState, useEffect, useRef } from "react";
 import {
   CandlestickData,
   IChartApi,
+  ISeriesApi,
+  MouseEventParams,
   Time,
   createChart,
 } from "lightweight-charts";
 import TimeframeButton from "../Button/TimeframeButton";
 import { chartConfig } from "../../configuration/chartConfiguration/chartConfig";
 import {
+  CustomTooltip,
   SubscribeData,
   TimeFrameOption,
 } from "../../types/interfaces/IOhclChart";
@@ -24,7 +27,7 @@ import useStyles from "./CandlestickChart.styles";
 import { getLogicalRange } from "./CandleStickChartCalculation";
 import { handleTooltipContent } from "./CandleStickChartCalculation";
 import { defaultWebSocketURL } from "@/app/utils/webSocketUrl";
-import { Box, Paper } from "@mui/material";
+import { Box, Paper, Typography } from "@mui/material";
 
 const CandlestickChart: React.FC = () => {
   const classes = useStyles();
@@ -32,19 +35,24 @@ const CandlestickChart: React.FC = () => {
   const [candleData, setCandleData] = useState<CandlestickData<Time>[]>([]);
   const [isChartLoaded, setIsChartLoaded] = useState<boolean>(false);
   const [timeframe, setTimeframe] = useState<string>(Timeframe.ONE_WEEK);
+  const [tooltip, setTooltip] = useState<CustomTooltip | null>();
   let [chartApi, setChartApi] = useState<IChartApi>();
-
+  const [tooltipColor, setTooltipColor] = useState<string>();
   const subscribeData: SubscribeData = {
     event: SUBSCRIBE_KEY,
     channel: CHANNEL_KEY,
     key: `trade:${timeframe}:tBTCUSD`,
   };
 
+  const setCandleDataCallback = (newCandleData: CandlestickData<Time>[]) => {
+    setCandleData(newCandleData);
+  };
+
   useEffect(() => {
     const wss = connectWebSocket(
       process.env.WEBSOCKET_API_URL || defaultWebSocketURL,
       subscribeData,
-      setCandleData
+      setCandleDataCallback
     );
     return () => {
       closeWebSocket(wss);
@@ -79,44 +87,34 @@ const CandlestickChart: React.FC = () => {
       candlestickSeries?.setData(candleData);
       let logicalRange = getLogicalRange(timeframe, candleData);
       chartApi.timeScale().setVisibleLogicalRange(logicalRange);
-
-      const tooltipElement = document.createElement("div");
-      tooltipElement.classList.add("custom-tooltip");
-      chartContainerRef.current.appendChild(tooltipElement);
-
+      
       chartApi.subscribeCrosshairMove((param) => {
-        if (!param.time || !param.point) return;
-
-        const price = param?.seriesData?.get(candlestickSeries) as CandlestickData<Time>;
-        if (!price) return;
-
-        const tooltipColor: string = price.close > price.open ? "#4bffb5" : "#ff4976";
-
-        const chartRect = chartContainerRef?.current?.getBoundingClientRect();
-        const chartLeft = chartRect?.left ?? 0 + window.scrollX;
-        const chartTop = chartRect?.top ?? 0 + window.scrollY;
-
-        const tooltipX = param.point.x - chartLeft + 10;
-        const tooltipY = param.point.y - chartTop - tooltipElement.offsetHeight - 10;
-
-        tooltipElement.style.left = `${tooltipX}px`;
-        tooltipElement.style.top = `${tooltipY}px`;
-
-        tooltipElement.innerHTML = handleTooltipContent(price, tooltipColor);
-        tooltipElement.style.display = "block";
+        updateTooltipContent(param, candlestickSeries)
       });
-
-      return () => {
-        if (tooltipElement && tooltipElement.parentNode) {
-          tooltipElement.parentNode.removeChild(tooltipElement);
-        }
-      };
     }
-  }, [candleData, isChartLoaded, timeframe]);TimeframeButton
+  }, [candleData, isChartLoaded, timeframe]);
+
+    const updateTooltipContent = (param: MouseEventParams<Time>, candlestickSeries: ISeriesApi<"Candlestick">) => {
+      if (!param.time || !param.point) return;""
+      const price = param?.seriesData?.get(candlestickSeries) as CandlestickData<Time>;
+      if (!price) return;
+      setTooltipColor(price.close > price.open ? "#4bffb5" : "#ff4976");
+      setTooltip(handleTooltipContent(price));
+    }
 
   return (
     <Box>
       <Paper className={classes.chartContainer} ref={chartContainerRef} />
+      {isChartLoaded &&
+      <Typography className={classes.customTooltipContainer}>
+        <span style={{ color: tooltipColor }}>O {tooltip?.open}</span>
+        <span style={{ color: tooltipColor }}>H {tooltip?.high}</span> 
+        <span style={{ color: tooltipColor }}>L {tooltip?.low}</span>
+        <span style={{ color: tooltipColor }}>C {tooltip?.close}</span> 
+        <span style={{ color: tooltipColor }}>{tooltip?.valueSign}{tooltip?.difference}</span> 
+        <span style={{ color: tooltipColor }}>({tooltip?.profitOrLossText})</span>
+        </Typography>
+        }
       {isChartLoaded &&
         timeFrameOptions.map((option: TimeFrameOption, index) => (
           <React.Fragment key={option.value}>

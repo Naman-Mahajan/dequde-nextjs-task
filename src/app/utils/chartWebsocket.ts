@@ -2,16 +2,16 @@
 
 import { CandlestickData, Time } from "lightweight-charts";
 import { SubscribeData } from "../types/interfaces/IOhclChart";
+import { CandleIndexs } from "../configuration/chartConfiguration/enum";
 
 export const connectWebSocket = (
   url: string,
   subscribeData: SubscribeData,
-  setCandleData: React.Dispatch<React.SetStateAction<CandlestickData<Time>[]>>
+  setCandleDataCallback:(newCandleData: any) => void
 ) => {
   const wss = new WebSocket(url);
 
   wss.onopen = () => {
-    setCandleData([]);
     const msg = JSON.stringify(subscribeData);
     wss.send(msg);
   };
@@ -21,33 +21,33 @@ export const connectWebSocket = (
     if (Array.isArray(candleStickData) && Array.isArray(candleStickData[1])) {
       const candleArray = candleStickData[1];
       if (Array.isArray(candleArray[0])) {
-        let sortedCandleData = candleStickData[1].sort(
+        const sortedCandleData = candleStickData[1].sort(
           (a: number[], b: number[]) => a[0] - b[0]
         );
-        candleStickData[1] = sortedCandleData.map((candle) => {
+        const finalCandleData = sortedCandleData.map((candle) => {
           return {
-            time: (candle[0] / 1000) as Time,
-            open: candle[1],
-            close: candle[2],
-            high: candle[3],
-            low: candle[4],
+            time: (candle[CandleIndexs.TIME_INDEX] / 1000) as Time,
+            open: candle[CandleIndexs.OPEN_INDEX],
+            close: candle[CandleIndexs.CLOSE_INDEX],
+            high: candle[CandleIndexs.HIGH_INDEX],
+            low: candle[CandleIndexs.LOW_INDEX],
           };
         });
-        setCandleData(candleStickData[1]);
-      } else {
-        setCandleData((prevData) => {
+        setCandleDataCallback(finalCandleData);
+      } else  {
+        const newCandle = candleStickData[1];
+        const candleObj = {
+          time: (newCandle[CandleIndexs.TIME_INDEX] / 1000) as Time,
+          open: newCandle[CandleIndexs.OPEN_INDEX],
+          close: newCandle[CandleIndexs.CLOSE_INDEX],
+          high: newCandle[CandleIndexs.HIGH_INDEX],
+          low: newCandle[CandleIndexs.LOW_INDEX],
+        };
+        setCandleDataCallback((prevData: CandlestickData<Time>[]) => {
           const newData: CandlestickData<Time>[] = [...prevData];
-          const newCandle = candleStickData[1];
           const existingCandleIndex: number = newData.findIndex(
-            (candle) => candle.time === newCandle[0] / 1000
+            (candle) => candle.time === candleObj.time
           );
-          let candleObj = {
-            time: (newCandle[0] / 1000) as Time,
-            open: newCandle[1],
-            close: newCandle[2],
-            high: newCandle[3],
-            low: newCandle[4],
-          };
           if (existingCandleIndex !== -1) {
             newData[existingCandleIndex] = candleObj;
           } else {
