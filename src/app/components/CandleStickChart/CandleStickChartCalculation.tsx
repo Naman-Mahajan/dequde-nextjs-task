@@ -34,10 +34,10 @@ export const handleTooltipContent = (price: CandlestickData) => {
     const valueSign = valueDifference >= 0 ? "+" : "-";
     const profitOrLossText = profitOrLoss >= 0 ? `+${profitOrLoss.toFixed(2)}%` : `${profitOrLoss.toFixed(2)}%`;
     const content = {
-        open: open,
-        high: high,
-        low: low,
-        close: close,
+        open: open.toFixed(),
+        high: high.toFixed(),
+        low: low.toFixed(),
+        close: close.toFixed(),
         difference: Math.abs(valueDifference).toFixed(),
         percentage: profitOrLoss.toFixed(2),
         valueSign,

@@ -99,38 +99,39 @@ const CandlestickChart: React.FC = () => {
       const price = param?.seriesData?.get(candlestickSeries) as CandlestickData<Time>;
       if (!price) return;
       setTooltipColor(price.close > price.open ? "#4bffb5" : "#ff4976");
-      setTooltip(handleTooltipContent(price));
+      setTooltip(handleTooltipContent(price))
     }
 
   return (
     <Box>
       <Paper className={classes.chartContainer} ref={chartContainerRef} />
-      {isChartLoaded &&
-      <Typography className={classes.customTooltipContainer}>
-        <span style={{ color: tooltipColor }}>O {tooltip?.open}</span>
-        <span style={{ color: tooltipColor }}>H {tooltip?.high}</span> 
-        <span style={{ color: tooltipColor }}>L {tooltip?.low}</span>
-        <span style={{ color: tooltipColor }}>C {tooltip?.close}</span> 
-        <span style={{ color: tooltipColor }}>{tooltip?.valueSign}{tooltip?.difference}</span> 
-        <span style={{ color: tooltipColor }}>({tooltip?.profitOrLossText})</span>
-        </Typography>
-        }
-      {isChartLoaded &&
-        timeFrameOptions.map((option: TimeFrameOption, index) => (
-          <React.Fragment key={option.value}>
-            <TimeframeButton
-              timeframe={option.value}
-              setTimeframe={setTimeframe}
-              label={option.label}
-              selected={timeframe === option.value}
-            />
-            {index < timeFrameOptions.length - 1 && (
-              <Box className={classes.spacer} />
-            )}
-          </React.Fragment>
-        ))}
+      {isChartLoaded && (
+      <Box className={classes.customTooltipContainer} style={{ color: tooltipColor }}>
+        <Typography>O {tooltip?.open}</Typography>
+        <Typography>H {tooltip?.high}</Typography> 
+        <Typography>L {tooltip?.low}</Typography>
+        <Typography>C {tooltip?.close}</Typography> 
+        <Typography>{tooltip?.valueSign}{tooltip?.difference}</Typography> 
+        <Typography>({tooltip?.profitOrLossText})</Typography>
+        </Box> && 
+           timeFrameOptions.map((option: TimeFrameOption, index) => (
+            <React.Fragment key={option.value}>
+              <TimeframeButton
+                timeframe={option.value}
+                setTimeframe={setTimeframe}
+                label={option.label}
+                selected={timeframe === option.value}
+              />
+              {index < timeFrameOptions.length - 1 && (
+                <Box className={classes.spacer} />
+              )}
+            </React.Fragment>
+          ))
+        )}
     </Box>
   );
 };
 
 export default CandlestickChart;
+
+
